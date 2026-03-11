@@ -28,6 +28,8 @@ public class TestSmartphoneApp {
 
             testInserisciNuovaApp(appServiceInstance);
 
+            testAggiornaAppConData(appServiceInstance);
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -71,6 +73,18 @@ public class TestSmartphoneApp {
         }
 
         System.out.println("..........testInserisciNuovaApp fine PASSED..........");
+    }
+
+    private  static void testAggiornaAppConData(AppService appServiceInstance) throws Exception{
+        System.out.println("..........testAggiornaAppConData inizio..........");
+
+        List<App> listaApp = appServiceInstance.listAll();
+        App appDaModificare = listaApp.get(0);
+        appDaModificare.setVersione("1.0.2");
+        appDaModificare.setDataUltimoAggiornamento(LocalDate.of(2026, 3, 12));
+        appServiceInstance.update(appDaModificare);
+
+        System.out.println("..........testAggiornaAppConData fine PASSED..........");
     }
 
 }

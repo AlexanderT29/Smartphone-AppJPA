@@ -75,7 +75,7 @@ public class AppServiceImpl implements AppService{
 
             appDAO.update(app);
 
-            entityManager.getTransaction().begin();
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
