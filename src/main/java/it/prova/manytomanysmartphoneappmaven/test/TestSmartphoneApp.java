@@ -30,6 +30,8 @@ public class TestSmartphoneApp {
 
             testAggiornaAppConData(appServiceInstance);
 
+            testInstallazioneAppSuSmartphone(appServiceInstance, smartphoneService);
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -85,6 +87,18 @@ public class TestSmartphoneApp {
         appServiceInstance.update(appDaModificare);
 
         System.out.println("..........testAggiornaAppConData fine PASSED..........");
+    }
+
+    private static void testInstallazioneAppSuSmartphone(AppService appServiceInstance, SmartphoneService smartphoneServiceInstance) throws Exception{
+        System.out.println("..........testInstallazioneAppSuSmartphone inizio..........");
+
+        List<App> listaApp = appServiceInstance.listAll();
+        List<Smartphone> listaSmart = smartphoneServiceInstance.listAll();
+        App appDaInstallare = listaApp.get(0);
+        Smartphone smartphoneDoveInstallare = listaSmart.get(0);
+        smartphoneServiceInstance.aggiungiApp(smartphoneDoveInstallare, appDaInstallare);
+
+        System.out.println("..........testInstallazioneAppSuSmartphone fine PASSED..........");
     }
 
 }
