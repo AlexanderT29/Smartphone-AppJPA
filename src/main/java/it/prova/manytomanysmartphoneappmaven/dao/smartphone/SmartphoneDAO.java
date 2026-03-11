@@ -1,6 +1,7 @@
 package it.prova.manytomanysmartphoneappmaven.dao.smartphone;
 
 import it.prova.manytomanysmartphoneappmaven.dao.IBaseDAO;
+import it.prova.manytomanysmartphoneappmaven.model.App;
 import it.prova.manytomanysmartphoneappmaven.model.Smartphone;
 
 import javax.persistence.EntityManager;
@@ -20,4 +21,7 @@ public interface SmartphoneDAO extends IBaseDAO<Smartphone> {
     public void setEntityManager(EntityManager entityManager);
 
     public void deleteAndUnlinkApp(Long smartphoneId) throws Exception;
+
+
+    public Smartphone findByIdFetchingApps(Long id) throws Exception;
 }

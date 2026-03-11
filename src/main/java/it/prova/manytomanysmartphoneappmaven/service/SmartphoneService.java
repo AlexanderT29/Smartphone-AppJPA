@@ -24,4 +24,8 @@ public interface SmartphoneService {
 
     public void aggiungiApp(Smartphone smartphone, App app) throws Exception;
 
+    public void disinstallaApp(App app, Smartphone smartphone) throws Exception;
+
+    public Smartphone caricaSingoloElementoEInizializzaApps(Long id) throws Exception;
+
 }

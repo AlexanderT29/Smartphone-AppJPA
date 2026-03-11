@@ -1,9 +1,11 @@
 package it.prova.manytomanysmartphoneappmaven.dao.smartphone;
 
 import it.prova.manytomanysmartphoneappmaven.dao.EntityManagerUtily;
+import it.prova.manytomanysmartphoneappmaven.model.App;
 import it.prova.manytomanysmartphoneappmaven.model.Smartphone;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class SmartphoneDAOImpl implements SmartphoneDAO{
@@ -57,5 +59,15 @@ public class SmartphoneDAOImpl implements SmartphoneDAO{
         entityManager.createNativeQuery("DELETE FROM smartphone WHERE id = ?1")
                 .setParameter(1, smartphoneId)
                 .executeUpdate();
+    }
+
+
+
+    public Smartphone findByIdFetchingApps(Long id) throws Exception{
+        TypedQuery<Smartphone> query = entityManager.createQuery(
+                "select s from Smartphone s left join fetch s.apps where s.id = :idSmartphone",
+                Smartphone.class);
+        query.setParameter("idSmartphone", id);
+        return query.getSingleResult();
     }
 }

@@ -82,4 +82,14 @@ public class Smartphone {
     public void setApps(Set<App> apps) {
         this.apps = apps;
     }
+
+    public void addToApps(App appInstance) {
+        this.apps.add(appInstance);
+        appInstance.getSmartphones().add(this);
+    }
+
+    public void removeFromApps(App appInstance) {
+        this.apps.remove(appInstance);
+        appInstance.getSmartphones().remove(this);
+    }
 }

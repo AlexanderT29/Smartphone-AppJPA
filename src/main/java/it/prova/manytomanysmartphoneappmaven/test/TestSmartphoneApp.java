@@ -32,6 +32,16 @@ public class TestSmartphoneApp {
 
             testInstallazioneAppSuSmartphone(appServiceInstance, smartphoneService);
 
+            testDisinstallaAppDaSmartphone(appServiceInstance, smartphoneService);
+
+            testRimuoviSmartphoneConDueApp(appServiceInstance, smartphoneService);
+
+            System.out.println(
+                    "****************************** fine batteria di test ********************************************");
+            System.out.println(
+                    "*************************************************************************************************");
+            System.out.println("In tabella Smartphone ci sono " + smartphoneService.listAll().size() + " elementi.");
+            System.out.println("In tabella App ci sono " + appServiceInstance.listAll().size() + " elementi");
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -90,15 +100,79 @@ public class TestSmartphoneApp {
     }
 
     private static void testInstallazioneAppSuSmartphone(AppService appServiceInstance, SmartphoneService smartphoneServiceInstance) throws Exception{
-        System.out.println("..........testInstallazioneAppSuSmartphone inizio..........");
+        System.out.println("..........testInstallazioneAppSuSmartphone INIZIO..........");
 
-        List<App> listaApp = appServiceInstance.listAll();
-        List<Smartphone> listaSmart = smartphoneServiceInstance.listAll();
-        App appDaInstallare = listaApp.get(0);
-        Smartphone smartphoneDoveInstallare = listaSmart.get(0);
-        smartphoneServiceInstance.aggiungiApp(smartphoneDoveInstallare, appDaInstallare);
+        // 1. Creazione e inserimento Smartphone
+        Smartphone smartphoneNuovo = new Smartphone("Iphone", "17", 1450.99, "iOS 17");
+        smartphoneServiceInstance.insert(smartphoneNuovo);
+
+        // 2. Creazione e inserimento App
+        App appNuova = new App("Facemagazine", LocalDate.now(), LocalDate.now(), "Versione 1.0.1");
+        appServiceInstance.insert(appNuova);
+
+
+        smartphoneServiceInstance.aggiungiApp(smartphoneNuovo, appNuova);
+        smartphoneNuovo = smartphoneServiceInstance.caricaSingoloElementoEInizializzaApps(smartphoneNuovo.getId());
+
+        System.out.println("App installate nello smartphone: " + smartphoneNuovo.getApps().size());
+        for (App appItem : smartphoneNuovo.getApps()) {
+            System.out.println(" - Nome App: " + appItem.getNome());
+        }
+
+        if (smartphoneNuovo.getApps().isEmpty()) {
+            throw new RuntimeException("Test fallito: Lo smartphone non ha app collegate.");
+        }
 
         System.out.println("..........testInstallazioneAppSuSmartphone fine PASSED..........");
     }
+
+    private static void testDisinstallaAppDaSmartphone(AppService appServiceInstance, SmartphoneService smartphoneServiceInstance) throws Exception{
+        System.out.println("..........testDisinstallaAppDaSmartphone INIZIO..........");
+
+        Smartphone smartphone = new Smartphone("Samsung", "S24", 900.0, "Android 14");
+        smartphoneServiceInstance.insert(smartphone);
+        App app = new App("Spotifi", LocalDate.now(), LocalDate.now(), "8.9.0");
+        appServiceInstance.insert(app);
+        smartphoneServiceInstance.aggiungiApp(smartphone, app);
+        smartphone = smartphoneServiceInstance.caricaSingoloElementoEInizializzaApps(smartphone.getId());
+        if (smartphone.getApps().size() != 1) {
+            throw new RuntimeException("Errore: App non installata correttamente.");
+        }
+        System.out.println("App installata con successo.");
+        smartphoneServiceInstance.disinstallaApp(app, smartphone);
+        smartphone = smartphoneServiceInstance.caricaSingoloElementoEInizializzaApps(smartphone.getId());
+        if (!smartphone.getApps().isEmpty()) {
+            throw new RuntimeException("Test fallito: L'app è ancora presente nello smartphone.");
+        }
+
+        System.out.println("App disinstallata con successo. Numero app rimaste: " + smartphone.getApps().size());
+        System.out.println("..........testDisinstallaAppDaSmartphone fine PASSED..........");
+    }
+
+    private static void testRimuoviSmartphoneConDueApp(AppService appServiceInstance, SmartphoneService smartphoneServiceInstance) throws Exception{
+        System.out.println("..........testRimuoviSmartphoneConDueApp INIZIO..........");
+
+        Smartphone smartphone = new Smartphone("Samsung", "S22", 900.0, "Android 12");
+        smartphoneServiceInstance.insert(smartphone);
+        App app1 = new App("Spotifi", LocalDate.now(), LocalDate.now(), "9.9.0");
+        appServiceInstance.insert(app1);
+        App app2 = new App("Discordia", LocalDate.now(), LocalDate.now(), "5,7,2");
+        appServiceInstance.insert(app2);
+        smartphoneServiceInstance.aggiungiApp(smartphone, app1);
+        smartphoneServiceInstance.aggiungiApp(smartphone, app2);
+        smartphone = smartphoneServiceInstance.caricaSingoloElementoEInizializzaApps(smartphone.getId());
+        for(App app: smartphone.getApps()){
+            System.out.println(app.getNome());
+        }
+        smartphoneServiceInstance.deleteAndUnlinkApp(smartphone.getId());
+
+
+
+        System.out.println("..........testRimuoviSmartphoneConDueApp fine PASSED..........");
+
+
+    }
+
+
 
 }
